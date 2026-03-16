@@ -61,15 +61,6 @@ Final submission blends own models (IlliFiction, IlliFictionLast, IlliDub) with 
 ```
 
 
-## Kaggle Notebooks
-
-Key notebooks published on Kaggle ([illidan7](https://www.kaggle.com/illidan7)):
-
-- [GBVPP - Cerberus](https://www.kaggle.com/code/illidan7/gbvpp-cerberus)
-- [GBVPP - EnsembleSubmit](https://www.kaggle.com/code/illidan7/gbvpp-ensemblesubmit)
-- [GBVPP - IlliFiction](https://www.kaggle.com/code/illidan7/gbvpp-illifiction)
-- [GBVPP - IlliFictionKNN](https://www.kaggle.com/code/illidan7/gbvpp-illifictionknn)
-- [GBVPP - Inference](https://www.kaggle.com/code/illidan7/gbvpp-inference)
 ## Tech Stack
 
 - **Models**: Keras/TF BiLSTM+GRU (TPU), PyTorch BiLSTM, RandomForest classifier
