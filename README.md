@@ -1,5 +1,7 @@
 # Ventilator Pressure Prediction — Kaggle Competition
 
+![Competition Header](assets/header.png)
+
 ## Overview
 
 The [Google Brain Ventilator Pressure Prediction](https://www.kaggle.com/competitions/ventilator-pressure-prediction) competition (2021) challenged participants to predict airway pressure in mechanical ventilation simulations. Each breath is an 80-step time series; the task is to predict pressure at each timestep given ventilator control signals (u_in, u_out) and lung mechanics parameters (R = resistance, C = compliance).
@@ -37,6 +39,36 @@ Used RAPIDS KMeans at multiple cluster granularities (10 to 100K) to group simil
 ### 5. Ensemble Strategy
 
 Final submission blends own models (IlliFiction, IlliFictionLast, IlliDub) with selected public kernels using adaptive mean/median blending — uses mean when fold predictions agree (spread < 0.45), median when outliers are detected. Post-processing rounds predictions to nearest known pressure step.
+
+## Results
+
+| Model | Notes |
+|---|---|
+| BiLSTM baseline (PyTorch) | Initial sequence model |
+| 950-class classification | Pressure discretization experiment |
+| IlliFiction (BiLSTM+GRU) | Primary model — TPU, 7-10 fold CV |
+| IlliDub | Add-based residual variant |
+| Cerberus | Multi-input with inhale masking |
+| **Final adaptive ensemble** | Mean/median blend + pressure rounding |
+
+> Metric: Weighted MAE (inhale phase only)
+
+## Architecture
+
+```mermaid
+graph LR
+    A["Breath Sequences<br>(u_in, u_out, R, C)"] --> B["Feature Engineering<br>100+ features (cuDF)"]
+    B --> B2["KMeans Clustering<br>breath waveform groups"]
+    B2 --> C["Cross-Breath Features"]
+    B --> C
+    C --> D1["IlliFiction<br>5-layer BiLSTM + GRU<br>multiplicative skip"]
+    C --> D2["IlliDub<br>add-based residuals"]
+    C --> D3["Cerberus<br>multi-input, inhale mask"]
+    D1 --> E["Adaptive Ensemble<br>mean (low spread) / median (outliers)"]
+    D2 --> E
+    D3 --> E
+    E --> F["Pressure Rounding<br>nearest known step"]
+```
 
 ## Repository Structure
 
